@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import '@/styles/auth.css';
 import '@/styles/agro.css';
@@ -35,6 +35,30 @@ const RegisterPage = () => {
     'Gujarati': '/auto/gu',
     'Punjabi': '/auto/pa'
   };
+
+  // Load language preference from localStorage on component mount
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem('languagePreference');
+    if (savedLanguage) {
+      setFormData(prev => ({
+        ...prev,
+        language_preference: savedLanguage
+      }));
+      
+      // Apply the language translation based on saved preference
+      if (savedLanguage === 'English') {
+        deleteCookie('googtrans', { path: '/', domain: window.location.hostname });
+        deleteCookie('googtrans', { path: '/' });
+        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname;
+        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      } else if (languageMap[savedLanguage]) {
+        const cookieOptions = { path: '/', domain: window.location.hostname };
+        setCookie('googtrans', decodeURI(languageMap[savedLanguage]), cookieOptions);
+        document.cookie = `googtrans=${encodeURIComponent(languageMap[savedLanguage])}; path=/; domain=${window.location.hostname}`;
+        document.cookie = `googtrans=${encodeURIComponent(languageMap[savedLanguage])}; path=/`;
+      }
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -139,6 +163,9 @@ const RegisterPage = () => {
                       className={`language-button ${formData.language_preference === lang ? 'selected' : ''}`}
                       onClick={() => {
                         handleChange({ target: { name: 'language_preference', value: lang } });
+                        
+                        // Save language preference to localStorage
+                        localStorage.setItem('languagePreference', lang);
                         
                         // For English, remove the cookie to show original content
                         if (lang === 'English') {

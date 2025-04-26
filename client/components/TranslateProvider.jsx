@@ -101,49 +101,7 @@ const TranslateProvider = ({ children }) => {
     }
 
     return (
-        <>
-            {/* Make sure this element exists for Google Translate to work with */}
-            <div 
-                id="google_translate_element" 
-                style={{
-                    width:'0px',
-                    height:'0px',
-                    position:'absolute',
-                    left:'50%',
-                    zIndex:-99999
-                }}
-            ></div>
-            
-            {/* Language selector */}
-            <div 
-                className="translate-picker-container" 
-                style={{ 
-                    position: 'absolute', 
-                    top: '20px', 
-                    right: '20px', 
-                    zIndex: 1000,
-                    backgroundColor: 'white',
-                    padding: '5px',
-                    borderRadius: '4px',
-                    boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
-                }}
-                onClick={(e) => e.stopPropagation()} // Prevent clicks from propagating
-            >
-                <SelectPicker 
-                    data={languages} 
-                    style={{ width: 120 }}  // Increased width for better visibility
-                    placement="bottomEnd"
-                    cleanable={false}
-                    value={selected}
-                    searchable={false}
-                    className={'notranslate'}
-                    menuClassName={'notranslate'}
-                    onSelect={(value, item, event) => langChange(value, item, event)}
-                    renderMenuItem={(label) => <div style={{padding: '5px'}}>{label}</div>}
-                    placeholder="Language"
-                /> 
-            </div>
-            
+        <>            
             {children}
         </>
     );
